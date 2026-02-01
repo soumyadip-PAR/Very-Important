@@ -144,7 +144,6 @@
         }
 
         .yes-btn:hover {
-            transform: scale(1.1);
             box-shadow: 0 15px 40px rgba(245, 87, 108, 0.6);
         }
 
@@ -234,27 +233,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Music toggle button */
-        .music-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 28px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            z-index: 50;
-        }
 
-        .music-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
 
         /* Confetti */
         .confetti {
@@ -273,6 +252,98 @@
             }
         }
 
+        /* Pleading message */
+        .pleading-message {
+            font-family: 'Quicksand', sans-serif;
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            color: white;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            margin-top: 30px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            font-weight: 600;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .pleading-message.show {
+            opacity: 1;
+        }
+
+        /* Sad emoji that appears */
+        .sad-emoji {
+            position: fixed;
+            font-size: 80px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 20;
+            animation: sadFloat 2s ease-out forwards;
+        }
+
+        @keyframes sadFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-50px) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0.8);
+            }
+        }
+
+        /* Screen shake */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        /* Spotlight effect on Yes button */
+        .spotlight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at var(--x) var(--y), transparent 150px, rgba(0, 0, 0, 0.7) 400px);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 5;
+        }
+
+        .spotlight.active {
+            opacity: 1;
+        }
+
+        /* Arrow pointing to Yes */
+        .arrow-pointer {
+            position: absolute;
+            font-size: 60px;
+            opacity: 0;
+            pointer-events: none;
+            animation: pointAndBounce 1s ease-in-out infinite;
+        }
+
+        @keyframes pointAndBounce {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-20px);
+                opacity: 0.7;
+            }
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .buttons {
@@ -288,6 +359,14 @@
                 padding: 14px 35px;
                 font-size: 20px;
             }
+
+            .sad-emoji {
+                font-size: 60px;
+            }
+
+            .arrow-pointer {
+                font-size: 40px;
+            }
         }
     </style>
 </head>
@@ -295,10 +374,10 @@
     <!-- Floating hearts background -->
     <div class="hearts-bg" id="heartsContainer"></div>
 
-    <!-- Music toggle -->
-    <button class="music-toggle" id="musicToggle" title="Toggle Music">🎵</button>
+    <!-- Spotlight effect -->
+    <div class="spotlight" id="spotlight"></div>
 
-    <!-- Main content -->
+<!-- Main content -->
     <div class="container">
         <div class="question">
             Will you be my<br>Valentine? 💖
@@ -306,7 +385,9 @@
         <div class="buttons">
             <button class="yes-btn" id="yesBtn">Yes! 💕</button>
             <button class="no-btn" id="noBtn">No</button>
+            <div class="arrow-pointer" id="arrow">👇</div>
         </div>
+        <div class="pleading-message" id="pleadingMessage">Please? 🥺</div>
     </div>
 
     <!-- Success screen -->
@@ -318,84 +399,7 @@
         <div class="celebration">🌹💝🥰</div>
     </div>
 
-    <!-- Background music using Web Audio API -->
     <script>
-        // Audio context for background music
-        let audioContext;
-        let isPlaying = false;
-        let oscillators = [];
-        
-        // Simple romantic melody using Web Audio API
-        function playBackgroundMusic() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-
-            if (isPlaying) {
-                // Stop music
-                oscillators.forEach(osc => {
-                    osc.stop();
-                });
-                oscillators = [];
-                isPlaying = false;
-                document.getElementById('musicToggle').textContent = '🔇';
-            } else {
-                // Play music - simple romantic melody
-                const melody = [
-                    { freq: 523.25, time: 0, duration: 0.5 },    // C5
-                    { freq: 587.33, time: 0.5, duration: 0.5 },  // D5
-                    { freq: 659.25, time: 1, duration: 0.5 },    // E5
-                    { freq: 698.46, time: 1.5, duration: 0.5 },  // F5
-                    { freq: 783.99, time: 2, duration: 1 },      // G5
-                    { freq: 659.25, time: 3, duration: 0.5 },    // E5
-                    { freq: 698.46, time: 3.5, duration: 0.5 },  // F5
-                    { freq: 783.99, time: 4, duration: 2 },      // G5
-                ];
-
-                const playMelody = () => {
-                    melody.forEach(note => {
-                        const osc = audioContext.createOscillator();
-                        const gainNode = audioContext.createGain();
-                        
-                        osc.connect(gainNode);
-                        gainNode.connect(audioContext.destination);
-                        
-                        osc.frequency.value = note.freq;
-                        osc.type = 'sine';
-                        
-                        gainNode.gain.setValueAtTime(0, audioContext.currentTime + note.time);
-                        gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + note.time + 0.05);
-                        gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + note.time + note.duration);
-                        
-                        osc.start(audioContext.currentTime + note.time);
-                        osc.stop(audioContext.currentTime + note.time + note.duration);
-                        
-                        oscillators.push(osc);
-                    });
-
-                    // Loop the melody
-                    setTimeout(() => {
-                        if (isPlaying) playMelody();
-                    }, 6000);
-                };
-
-                playMelody();
-                isPlaying = true;
-                document.getElementById('musicToggle').textContent = '🎵';
-            }
-        }
-
-        document.getElementById('musicToggle').addEventListener('click', playBackgroundMusic);
-
-        // Auto-start music on first interaction
-        let musicStarted = false;
-        document.addEventListener('click', () => {
-            if (!musicStarted) {
-                playBackgroundMusic();
-                musicStarted = true;
-            }
-        }, { once: true });
-
         // Floating hearts background
         function createHeart() {
             const heartsContainer = document.getElementById('heartsContainer');
@@ -414,11 +418,57 @@
 
         setInterval(createHeart, 300);
 
-        // No button runs away
+        // Pleading messages that escalate
+        const pleadingMessages = [
+            "Please? 🥺",
+            "Come on... pretty please? 🥹",
+            "I'll buy you ice cream! 🍦",
+            "You're breaking my heart! 💔",
+            "I promise to be the best Valentine ever! 🌹",
+            "Don't make me cry... 😢",
+            "I already bought chocolates! 🍫",
+            "My heart is melting... ❤️‍🔥",
+            "Just one chance! 🙏",
+            "The Yes button is RIGHT THERE! ➡️",
+            "Fine, I'll add more hearts... 💕💕💕",
+            "This is getting awkward... 😅",
+            "I'm running out of ideas here... 🤔",
+            "PLEASE?! I'M BEGGING! 🧎",
+            "Okay seriously though... 😳"
+        ];
+
+        let messageIndex = 0;
+        const pleadingMessageEl = document.getElementById('pleadingMessage');
+        const spotlight = document.getElementById('spotlight');
+        const arrow = document.getElementById('arrow');
+
+        // Function to create sad emoji that floats up
+        function createSadEmoji(x, y) {
+            const sadEmojis = ['😢', '😭', '💔', '🥺', '😞', '😔'];
+            const emoji = document.createElement('div');
+            emoji.className = 'sad-emoji';
+            emoji.textContent = sadEmojis[Math.floor(Math.random() * sadEmojis.length)];
+            emoji.style.left = x + 'px';
+            emoji.style.top = y + 'px';
+            document.body.appendChild(emoji);
+            
+            setTimeout(() => emoji.remove(), 2000);
+        }
+
+        // Make Yes button grow bigger every 2 seconds
+        const yesBtn = document.getElementById('yesBtn');
+        let yesScale = 1;
+        
+        setInterval(() => {
+            yesScale += 0.1;
+            yesBtn.style.transform = `scale(${yesScale})`;
+        }, 2000);
+
+        // No button runs away with dramatic effects
         const noBtn = document.getElementById('noBtn');
         let noClickCount = 0;
 
-        noBtn.addEventListener('mouseenter', () => {
+        noBtn.addEventListener('mouseenter', (e) => {
             const container = document.querySelector('.buttons');
             const containerRect = container.getBoundingClientRect();
             
@@ -439,20 +489,77 @@
             noBtn.style.fontSize = newSize + 'px';
             
             // Change text
-            const texts = ['No', 'Nope', 'Nah', 'No way', 'Never', 'Try again', 'Still no', 'Not happening'];
+            const texts = ['No', 'Nope', 'Nah', 'No way', 'Never', 'Try again', 'Still no', 'Not happening', 'Nu-uh', 'Nada'];
             noBtn.textContent = texts[noClickCount % texts.length];
+
+            // Create sad emoji at cursor position
+            createSadEmoji(e.clientX, e.clientY);
+
+            // Shake the screen
+            document.body.classList.add('shake');
+            setTimeout(() => document.body.classList.remove('shake'), 500);
+
+            // Show escalating pleading messages
+            if (noClickCount % 2 === 0 && messageIndex < pleadingMessages.length) {
+                pleadingMessageEl.textContent = pleadingMessages[messageIndex];
+                pleadingMessageEl.classList.add('show');
+                messageIndex++;
+            }
+
+            // After 5 attempts, activate spotlight on Yes button
+            if (noClickCount >= 5) {
+                const yesBtnRect = yesBtn.getBoundingClientRect();
+                spotlight.style.setProperty('--x', yesBtnRect.left + yesBtnRect.width / 2 + 'px');
+                spotlight.style.setProperty('--y', yesBtnRect.top + yesBtnRect.height / 2 + 'px');
+                spotlight.classList.add('active');
+
+                // Show arrow pointing to Yes button
+                arrow.style.opacity = '1';
+                arrow.style.left = (yesBtnRect.left + yesBtnRect.width / 2 - 30) + 'px';
+                arrow.style.top = (yesBtnRect.top - 80) + 'px';
+            }
+
+            // After 8 attempts, make hearts spawn more frequently
+            if (noClickCount >= 8) {
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => createHeart(), i * 100);
+                }
+            }
+
+            // After 10 attempts, change the question text
+            if (noClickCount >= 10) {
+                document.querySelector('.question').innerHTML = 'WILL YOU BE MY<br>VALENTINE?! 💖💖💖';
+            }
+
+            // After 12 attempts, make the No button really tiny and say something funny
+            if (noClickCount >= 12) {
+                noBtn.textContent = '🐭';
+                noBtn.style.fontSize = '8px';
+                pleadingMessageEl.textContent = "The 'No' button is literally a mouse now... 🐭";
+            }
         });
 
-        // Yes button action
+        // Yes button action with extra celebration
         document.getElementById('yesBtn').addEventListener('click', () => {
             const successScreen = document.getElementById('successScreen');
             successScreen.classList.add('active');
             
-            // Create confetti
-            for (let i = 0; i < 100; i++) {
+            // Remove spotlight and arrow
+            spotlight.classList.remove('active');
+            arrow.style.opacity = '0';
+            
+            // Create TONS of confetti
+            for (let i = 0; i < 200; i++) {
                 setTimeout(() => {
                     createConfetti();
-                }, i * 30);
+                }, i * 20);
+            }
+
+            // Create heart explosion
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    createHeart();
+                }, i * 100);
             }
         });
 
