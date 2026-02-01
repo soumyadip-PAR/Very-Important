@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine? 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            position: relative;
+        }
+
+        /* Floating hearts background animation */
+        .hearts-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            animation: floatUp 6s infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Question text */
+        .question {
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(2rem, 8vw, 4.5rem);
+            color: white;
+            text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 60px;
+            animation: bounceIn 1s ease-out;
+            line-height: 1.3;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Buttons container */
+        .buttons {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 200px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* Yes button */
+        .yes-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 28px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+            transition: all 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
+            animation: pulse 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .yes-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .yes-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .yes-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(245, 87, 108, 0.6);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* No button - will run away */
+        .no-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #764ba2;
+            border: 3px solid #f5576c;
+            padding: 15px 40px;
+            font-size: 22px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Quicksand', sans-serif;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .no-btn:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        /* Success screen */
+        .success-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .success-screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success-message {
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(2.5rem, 10vw, 5rem);
+            color: white;
+            text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+            animation: heartBeat 1.5s infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            10%, 30% {
+                transform: scale(1.1);
+            }
+            20%, 40% {
+                transform: scale(1);
+            }
+        }
+
+        .celebration {
+            font-size: 80px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Music toggle button */
+        .music-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f5576c;
+            position: absolute;
+            animation: confettiFall 3s linear;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .buttons {
+                gap: 20px;
+            }
+            
+            .yes-btn {
+                padding: 18px 40px;
+                font-size: 24px;
+            }
+            
+            .no-btn {
+                padding: 14px 35px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating hearts background -->
+    <div class="hearts-bg" id="heartsContainer"></div>
+
+    <!-- Music toggle -->
+    <button class="music-toggle" id="musicToggle" title="Toggle Music">🎵</button>
+
+    <!-- Main content -->
+    <div class="container">
+        <div class="question">
+            Will you be my<br>Valentine? 💖
+        </div>
+        <div class="buttons">
+            <button class="yes-btn" id="yesBtn">Yes! 💕</button>
+            <button class="no-btn" id="noBtn">No</button>
+        </div>
+    </div>
+
+    <!-- Success screen -->
+    <div class="success-screen" id="successScreen">
+        <div class="celebration">💖✨🎉</div>
+        <div class="success-message">
+            Yay! I knew it! 💕
+        </div>
+        <div class="celebration">🌹💝🥰</div>
+    </div>
+
+    <!-- Background music using Web Audio API -->
+    <script>
+        // Audio context for background music
+        let audioContext;
+        let isPlaying = false;
+        let oscillators = [];
+        
+        // Simple romantic melody using Web Audio API
+        function playBackgroundMusic() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (isPlaying) {
+                // Stop music
+                oscillators.forEach(osc => {
+                    osc.stop();
+                });
+                oscillators = [];
+                isPlaying = false;
+                document.getElementById('musicToggle').textContent = '🔇';
+            } else {
+                // Play music - simple romantic melody
+                const melody = [
+                    { freq: 523.25, time: 0, duration: 0.5 },    // C5
+                    { freq: 587.33, time: 0.5, duration: 0.5 },  // D5
+                    { freq: 659.25, time: 1, duration: 0.5 },    // E5
+                    { freq: 698.46, time: 1.5, duration: 0.5 },  // F5
+                    { freq: 783.99, time: 2, duration: 1 },      // G5
+                    { freq: 659.25, time: 3, duration: 0.5 },    // E5
+                    { freq: 698.46, time: 3.5, duration: 0.5 },  // F5
+                    { freq: 783.99, time: 4, duration: 2 },      // G5
+                ];
+
+                const playMelody = () => {
+                    melody.forEach(note => {
+                        const osc = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        osc.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        osc.frequency.value = note.freq;
+                        osc.type = 'sine';
+                        
+                        gainNode.gain.setValueAtTime(0, audioContext.currentTime + note.time);
+                        gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + note.time + 0.05);
+                        gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + note.time + note.duration);
+                        
+                        osc.start(audioContext.currentTime + note.time);
+                        osc.stop(audioContext.currentTime + note.time + note.duration);
+                        
+                        oscillators.push(osc);
+                    });
+
+                    // Loop the melody
+                    setTimeout(() => {
+                        if (isPlaying) playMelody();
+                    }, 6000);
+                };
+
+                playMelody();
+                isPlaying = true;
+                document.getElementById('musicToggle').textContent = '🎵';
+            }
+        }
+
+        document.getElementById('musicToggle').addEventListener('click', playBackgroundMusic);
+
+        // Auto-start music on first interaction
+        let musicStarted = false;
+        document.addEventListener('click', () => {
+            if (!musicStarted) {
+                playBackgroundMusic();
+                musicStarted = true;
+            }
+        }, { once: true });
+
+        // Floating hearts background
+        function createHeart() {
+            const heartsContainer = document.getElementById('heartsContainer');
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = ['💕', '💖', '💗', '💓', '💝'][Math.floor(Math.random() * 5)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 3 + 's';
+            heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            heartsContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 7000);
+        }
+
+        setInterval(createHeart, 300);
+
+        // No button runs away
+        const noBtn = document.getElementById('noBtn');
+        let noClickCount = 0;
+
+        noBtn.addEventListener('mouseenter', () => {
+            const container = document.querySelector('.buttons');
+            const containerRect = container.getBoundingClientRect();
+            
+            // Random position within the container
+            const maxX = containerRect.width - noBtn.offsetWidth;
+            const maxY = containerRect.height - noBtn.offsetHeight;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            noBtn.style.transform = 'none';
+            
+            // Make it smaller each time
+            noClickCount++;
+            const newSize = Math.max(12, 22 - noClickCount * 2);
+            noBtn.style.fontSize = newSize + 'px';
+            
+            // Change text
+            const texts = ['No', 'Nope', 'Nah', 'No way', 'Never', 'Try again', 'Still no', 'Not happening'];
+            noBtn.textContent = texts[noClickCount % texts.length];
+        });
+
+        // Yes button action
+        document.getElementById('yesBtn').addEventListener('click', () => {
+            const successScreen = document.getElementById('successScreen');
+            successScreen.classList.add('active');
+            
+            // Create confetti
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    createConfetti();
+                }, i * 30);
+            }
+        });
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = '-10px';
+            confetti.style.background = ['#f5576c', '#f093fb', '#764ba2', '#667eea', '#FFD700'][Math.floor(Math.random() * 5)];
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+            document.body.appendChild(confetti);
+
+            setTimeout(() => {
+                confetti.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
