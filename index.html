@@ -112,8 +112,8 @@
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
             border: none;
-            padding: 20px 50px;
-            font-size: 28px;
+            padding: 18px 45px;
+            font-size: 24px;
             font-weight: 700;
             border-radius: 50px;
             cursor: pointer;
@@ -161,16 +161,18 @@
             background: rgba(255, 255, 255, 0.9);
             color: #764ba2;
             border: 3px solid #f5576c;
-            padding: 15px 40px;
-            font-size: 22px;
-            font-weight: 600;
+            padding: 18px 45px;
+            font-size: 24px;
+            font-weight: 700;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.2s ease;
             font-family: 'Quicksand', sans-serif;
+            position: relative;
+        }
+
+        .no-btn.running {
             position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
         }
 
         .no-btn:hover {
@@ -298,12 +300,12 @@
         /* Screen shake */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-            20%, 40%, 60%, 80% { transform: translateX(10px); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+            20%, 40%, 60%, 80% { transform: translateX(3px); }
         }
 
         .shake {
-            animation: shake 0.5s;
+            animation: shake 0.3s;
         }
 
         /* Spotlight effect on Yes button */
@@ -322,26 +324,6 @@
 
         .spotlight.active {
             opacity: 1;
-        }
-
-        /* Arrow pointing to Yes */
-        .arrow-pointer {
-            position: absolute;
-            font-size: 60px;
-            opacity: 0;
-            pointer-events: none;
-            animation: pointAndBounce 1s ease-in-out infinite;
-        }
-
-        @keyframes pointAndBounce {
-            0%, 100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            50% {
-                transform: translateY(-20px);
-                opacity: 0.7;
-            }
         }
 
         /* Responsive adjustments */
@@ -363,10 +345,6 @@
             .sad-emoji {
                 font-size: 60px;
             }
-
-            .arrow-pointer {
-                font-size: 40px;
-            }
         }
     </style>
 </head>
@@ -380,12 +358,11 @@
 <!-- Main content -->
     <div class="container">
         <div class="question">
-            Will you be my<br>Valentine? 💖
+            Penzi, will you be my<br>Valentine? 💖
         </div>
         <div class="buttons">
             <button class="yes-btn" id="yesBtn">Yes! 💕</button>
             <button class="no-btn" id="noBtn">No</button>
-            <div class="arrow-pointer" id="arrow">👇</div>
         </div>
         <div class="pleading-message" id="pleadingMessage">Please? 🥺</div>
     </div>
@@ -395,6 +372,10 @@
         <div class="celebration">💖✨🎉</div>
         <div class="success-message">
             Yay! I knew it! 💕
+        </div>
+        <img src="https://i.imgflip.com/2/4t0m5.jpg" alt="Success Kid Meme" style="max-width: 400px; width: 90%; border-radius: 20px; margin: 20px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+        <div style="font-family: 'Quicksand', sans-serif; font-size: 28px; color: white; font-weight: 700; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); margin-top: 10px;">
+            Mission Accomplished! 🎯
         </div>
         <div class="celebration">🌹💝🥰</div>
     </div>
@@ -440,7 +421,6 @@
         let messageIndex = 0;
         const pleadingMessageEl = document.getElementById('pleadingMessage');
         const spotlight = document.getElementById('spotlight');
-        const arrow = document.getElementById('arrow');
 
         // Function to create sad emoji that floats up
         function createSadEmoji(x, y) {
@@ -469,24 +449,61 @@
         let noClickCount = 0;
 
         noBtn.addEventListener('mouseenter', (e) => {
+            // Make it absolute positioned so it can move around
+            if (!noBtn.classList.contains('running')) {
+                noBtn.classList.add('running');
+            }
+
             const container = document.querySelector('.buttons');
             const containerRect = container.getBoundingClientRect();
+            const yesBtnRect = yesBtn.getBoundingClientRect();
             
-            // Random position within the container
-            const maxX = containerRect.width - noBtn.offsetWidth;
-            const maxY = containerRect.height - noBtn.offsetHeight;
+            let randomX, randomY;
+            let attempts = 0;
+            const maxAttempts = 50;
             
-            const randomX = Math.random() * maxX;
-            const randomY = Math.random() * maxY;
+            // Keep trying to find a position that doesn't overlap with Yes button
+            do {
+                randomX = Math.random() * (containerRect.width - noBtn.offsetWidth);
+                randomY = Math.random() * (containerRect.height - noBtn.offsetHeight);
+                
+                // Calculate absolute positions
+                const noBtnLeft = containerRect.left + randomX;
+                const noBtnTop = containerRect.top + randomY;
+                const noBtnRight = noBtnLeft + noBtn.offsetWidth;
+                const noBtnBottom = noBtnTop + noBtn.offsetHeight;
+                
+                // Add safety margin around Yes button (80px buffer)
+                const safetyMargin = 80;
+                const yesSafeLeft = yesBtnRect.left - safetyMargin;
+                const yesSafeTop = yesBtnRect.top - safetyMargin;
+                const yesSafeRight = yesBtnRect.right + safetyMargin;
+                const yesSafeBottom = yesBtnRect.bottom + safetyMargin;
+                
+                // Check if No button is outside the safety zone
+                const noOverlap = (
+                    noBtnRight < yesSafeLeft ||
+                    noBtnLeft > yesSafeRight ||
+                    noBtnBottom < yesSafeTop ||
+                    noBtnTop > yesSafeBottom
+                );
+                
+                if (noOverlap) {
+                    break;
+                }
+                
+                attempts++;
+            } while (attempts < maxAttempts);
             
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
-            noBtn.style.transform = 'none';
             
             // Make it smaller each time
             noClickCount++;
-            const newSize = Math.max(12, 22 - noClickCount * 2);
+            const newSize = Math.max(12, 24 - noClickCount * 1.5);
             noBtn.style.fontSize = newSize + 'px';
+            const newPadding = Math.max(8, 18 - noClickCount);
+            noBtn.style.padding = `${newPadding}px ${newPadding * 2}px`;
             
             // Change text
             const texts = ['No', 'Nope', 'Nah', 'No way', 'Never', 'Try again', 'Still no', 'Not happening', 'Nu-uh', 'Nada'];
@@ -497,7 +514,7 @@
 
             // Shake the screen
             document.body.classList.add('shake');
-            setTimeout(() => document.body.classList.remove('shake'), 500);
+            setTimeout(() => document.body.classList.remove('shake'), 300);
 
             // Show escalating pleading messages
             if (noClickCount % 2 === 0 && messageIndex < pleadingMessages.length) {
@@ -512,11 +529,6 @@
                 spotlight.style.setProperty('--x', yesBtnRect.left + yesBtnRect.width / 2 + 'px');
                 spotlight.style.setProperty('--y', yesBtnRect.top + yesBtnRect.height / 2 + 'px');
                 spotlight.classList.add('active');
-
-                // Show arrow pointing to Yes button
-                arrow.style.opacity = '1';
-                arrow.style.left = (yesBtnRect.left + yesBtnRect.width / 2 - 30) + 'px';
-                arrow.style.top = (yesBtnRect.top - 80) + 'px';
             }
 
             // After 8 attempts, make hearts spawn more frequently
@@ -524,11 +536,6 @@
                 for (let i = 0; i < 5; i++) {
                     setTimeout(() => createHeart(), i * 100);
                 }
-            }
-
-            // After 10 attempts, change the question text
-            if (noClickCount >= 10) {
-                document.querySelector('.question').innerHTML = 'WILL YOU BE MY<br>VALENTINE?! 💖💖💖';
             }
 
             // After 12 attempts, make the No button really tiny and say something funny
@@ -544,9 +551,8 @@
             const successScreen = document.getElementById('successScreen');
             successScreen.classList.add('active');
             
-            // Remove spotlight and arrow
+            // Remove spotlight
             spotlight.classList.remove('active');
-            arrow.style.opacity = '0';
             
             // Create TONS of confetti
             for (let i = 0; i < 200; i++) {
