@@ -358,7 +358,7 @@
 <!-- Main content -->
     <div class="container">
         <div class="question">
-            Penzi, will you be my<br>Valentine? 💖
+            Miss Anushka, will you be my<br>Valentine? 💖
         </div>
         <div class="buttons">
             <button class="yes-btn" id="yesBtn">Yes! 💕</button>
@@ -371,13 +371,16 @@
     <div class="success-screen" id="successScreen">
         <div class="celebration">💖✨🎉</div>
         <div class="success-message">
-            Yay! I knew it! 💕
+            I knew you'd say yes! Yaay! 💕
         </div>
-        <img src="https://i.imgflip.com/2/4t0m5.jpg" alt="Success Kid Meme" style="max-width: 400px; width: 90%; border-radius: 20px; margin: 20px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-        <div style="font-family: 'Quicksand', sans-serif; font-size: 28px; color: white; font-weight: 700; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); margin-top: 10px;">
-            Mission Accomplished! 🎯
+        <img src="https://i.pinimg.com/736x/52/93/e1/5293e1532c85e31b8c3d4d9c7b6ab6f0.jpg" alt="DuduBubu Love" style="max-width: 450px; width: 90%; border-radius: 20px; margin: 20px 0; box-shadow: 0 10px 40px rgba(0,0,0,0.4);">
+        <div style="font-family: 'Quicksand', sans-serif; font-size: clamp(1.1rem, 3.5vw, 1.5rem); color: white; font-weight: 700; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); margin-top: 25px; max-width: 650px; padding: 30px; background: rgba(255, 255, 255, 0.15); border-radius: 20px; backdrop-filter: blur(10px); line-height: 1.6;">
+            <strong style="font-size: clamp(1.3rem, 4vw, 1.8rem); display: block; margin-bottom: 15px; color: #FFE66D;">✨ NB: ✨</strong>
+            Now that you have come this far, it's time to check your mail again<br>
+            <span style="color: #FFE66D; font-size: clamp(1.2rem, 3.8vw, 1.65rem);">(I have something especially for you 😊)</span><br><br>
+            <strong style="font-size: clamp(1.4rem, 4.2vw, 2rem); color: #FF6B6B; text-shadow: 3px 3px 15px rgba(0,0,0,0.5);">Password: Boo-boo</strong>
         </div>
-        <div class="celebration">🌹💝🥰</div>
+        <div class="celebration" style="margin-top: 20px;">🌹💝🥰</div>
     </div>
 
     <script>
@@ -546,26 +549,45 @@
             }
         });
 
-        // Yes button action with extra celebration
+        // Yes button action with confirmation levels
+        let yesClickCount = 0;
+        
         document.getElementById('yesBtn').addEventListener('click', () => {
-            const successScreen = document.getElementById('successScreen');
-            successScreen.classList.add('active');
+            yesClickCount++;
             
-            // Remove spotlight
-            spotlight.classList.remove('active');
+            if (yesClickCount === 1) {
+                // First click - Ask "Are u sure?"
+                yesBtn.textContent = 'Are u sure? 🤔';
+                yesBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            } else if (yesClickCount === 2) {
+                // Second click - Ask "Ekdum sure??"
+                yesBtn.textContent = 'Ekdum sure?? 😳';
+                yesBtn.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+            } else if (yesClickCount === 3) {
+                // Third click - Ask "Matlab lock kiya jaayein???"
+                yesBtn.textContent = 'Matlab lock kiya jaayein??? 🔒';
+                yesBtn.style.background = 'linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%)';
+            } else {
+                // Fourth click - Final confirmation, show success screen
+                const successScreen = document.getElementById('successScreen');
+                successScreen.classList.add('active');
+                
+                // Remove spotlight
+                spotlight.classList.remove('active');
             
-            // Create TONS of confetti
-            for (let i = 0; i < 200; i++) {
-                setTimeout(() => {
-                    createConfetti();
-                }, i * 20);
-            }
+                // Create TONS of confetti
+                for (let i = 0; i < 200; i++) {
+                    setTimeout(() => {
+                        createConfetti();
+                    }, i * 20);
+                }
 
-            // Create heart explosion
-            for (let i = 0; i < 20; i++) {
-                setTimeout(() => {
-                    createHeart();
-                }, i * 100);
+                // Create heart explosion
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        createHeart();
+                    }, i * 100);
+                }
             }
         });
 
