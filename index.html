@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Be My Valentine? 💖</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&family=Dancing+Script:wght@400;600;700&family=Great+Vibes&family=Edu+NSW+ACT+Foundation:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -71,13 +71,14 @@
 
         /* Question text */
         .question {
-            font-family: 'Pacifico', cursive;
-            font-size: clamp(2rem, 8vw, 4.5rem);
+            font-family: 'Edu NSW ACT Foundation', cursive;
+            font-size: clamp(2.5rem, 9vw, 5rem);
             color: white;
             text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
             margin-bottom: 60px;
             animation: bounceIn 1s ease-out;
-            line-height: 1.3;
+            line-height: 1.4;
+            font-weight: 600;
         }
 
         @keyframes bounceIn {
@@ -119,7 +120,7 @@
             cursor: pointer;
             box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
             transition: all 0.3s ease;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Edu NSW ACT Foundation', cursive;
             animation: pulse 2s infinite;
             position: relative;
             overflow: hidden;
@@ -167,7 +168,7 @@
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Edu NSW ACT Foundation', cursive;
             position: relative;
         }
 
@@ -205,12 +206,12 @@
         }
 
         .success-message {
-            font-family: 'Pacifico', cursive;
-            font-size: clamp(2.5rem, 10vw, 5rem);
+            font-family: 'Edu NSW ACT Foundation', cursive;
+            font-size: clamp(2rem, 8vw, 3.5rem);
             color: white;
             text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
-            margin-bottom: 30px;
-            animation: heartBeat 1.5s infinite;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         @keyframes heartBeat {
@@ -256,7 +257,7 @@
 
         /* Pleading message */
         .pleading-message {
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Edu NSW ACT Foundation', cursive;
             font-size: clamp(1.2rem, 4vw, 2rem);
             color: white;
             text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
@@ -369,18 +370,21 @@
 
     <!-- Success screen -->
     <div class="success-screen" id="successScreen">
-        <div class="celebration">💖✨🎉</div>
-        <div class="success-message">
-            I knew you'd say yes! Yaay! 💕
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 30px;">
+            <div class="celebration" style="animation: none;">💖✨🎉</div>
+            <div class="success-message" style="margin: 0;">
+                I Knew You'd Say Yes! Yaay! 💕
+            </div>
+            <div class="celebration" style="animation: none;">💖✨🎉</div>
         </div>
-        <img src="https://i.pinimg.com/736x/52/93/e1/5293e1532c85e31b8c3d4d9c7b6ab6f0.jpg" alt="DuduBubu Love" style="max-width: 450px; width: 90%; border-radius: 20px; margin: 20px 0; box-shadow: 0 10px 40px rgba(0,0,0,0.4);">
-        <div style="font-family: 'Quicksand', sans-serif; font-size: clamp(1.1rem, 3.5vw, 1.5rem); color: white; font-weight: 700; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); margin-top: 25px; max-width: 650px; padding: 30px; background: rgba(255, 255, 255, 0.15); border-radius: 20px; backdrop-filter: blur(10px); line-height: 1.6;">
-            <strong style="font-size: clamp(1.3rem, 4vw, 1.8rem); display: block; margin-bottom: 15px; color: #FFE66D;">✨ NB: ✨</strong>
+        <img src="https://media.tenor.com/ivlixHuP8r0AAAAj/dudu-dudu-bubu.gif" alt="DuduBubu Love" style="max-width: 400px; width: 90%; border-radius: 20px; margin: 20px 0; box-shadow: 0 10px 40px rgba(0,0,0,0.4); background: white; padding: 10px;">
+        <div style="font-family: 'Quicksand', sans-serif; font-size: clamp(1.1rem, 3.5vw, 1.4rem); color: white; font-weight: 600; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); margin-top: 25px; max-width: 650px; padding: 30px; background: rgba(255, 255, 255, 0.15); border-radius: 20px; backdrop-filter: blur(10px); line-height: 1.8;">
+            <strong style="font-size: clamp(1.3rem, 4vw, 1.7rem); display: block; margin-bottom: 15px; color: #FFE66D;">NB:</strong>
             Now that you have come this far, it's time to check your mail again<br>
-            <span style="color: #FFE66D; font-size: clamp(1.2rem, 3.8vw, 1.65rem);">(I have something especially for you 😊)</span><br><br>
-            <strong style="font-size: clamp(1.4rem, 4.2vw, 2rem); color: #FF6B6B; text-shadow: 3px 3px 15px rgba(0,0,0,0.5);">Password: Boo-boo</strong>
+            <span style="color: #FFE66D; font-size: clamp(1.2rem, 3.8vw, 1.5rem);">(I have something especially for you 😊)</span><br><br>
+            <strong style="font-size: clamp(1.5rem, 4.5vw, 2rem); color: #FF6B6B; text-shadow: 3px 3px 15px rgba(0,0,0,0.5);">Password: Boo-boo</strong>
         </div>
-        <div class="celebration" style="margin-top: 20px;">🌹💝🥰</div>
+        <div class="celebration" style="margin-top: 20px; animation: none;">🌹💝🥰</div>
     </div>
 
     <script>
